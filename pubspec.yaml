@@ -1,0 +1,22 @@
+name: voyager_bloc
+description: A BLoC plugin for Voyager. Allows describing Bloc's initial state in YAML config.
+version: 0.1.0
+author: Lukasz Wisniewski <luke.cherrish@gmail.com>
+homepage: https://github.com/vishna/voyager_bloc
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  voyager: ^1.0.4
+  bloc: ^0.14.4
+  flutter_bloc: ^0.20.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
