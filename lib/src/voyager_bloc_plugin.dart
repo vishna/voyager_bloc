@@ -12,11 +12,11 @@ class BlocPluginBuilder {
     final blocType = _typeOf<BlocType>();
     final blocParentType = _typeOf<BlocParentType>();
 
-    if (blocType.toString() == "Bloc") {
+    if (blocType.toString() == _typeOf<Bloc>().toString()) {
       throw ArgumentError("BlocType must be a subclass of BlocParentType");
     }
 
-    if (blocParentType.toString() == "Bloc") {
+    if (blocParentType.toString() == _typeOf<Bloc>().toString()) {
       throw ArgumentError("BlocParentType must be a subclass of Bloc");
     }
 
@@ -78,7 +78,7 @@ class BlocPlugin extends RouterPlugin {
 
       final builder = _builders[key];
       if (builder == null) {
-        throw UnimplementedError("no bloc builder for $key");
+        throw UnimplementedError("No bloc builder for $key");
       }
 
       Bloc bloc = builder.builder(context, blocConfig, blocRepository);

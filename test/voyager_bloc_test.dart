@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voyager/voyager.dart';
 
@@ -92,5 +93,59 @@ void main() {
     expect((counterBloc as CounterBloc).currentState, 5);
 
     output.dispose();
+  });
+
+  test('bloc builder basic API - errors', () {
+    expect(
+        () => BlocPluginBuilder().addBaseBloc(null),
+        throwsA(allOf(
+            isArgumentError,
+            predicate((e) =>
+                e.message ==
+                'BlocType must be a subclass of BlocParentType'))));
+
+    expect(
+        () => BlocPluginBuilder().addBloc<ChildBloc, Bloc>(null),
+        throwsA(allOf(
+            isArgumentError,
+            predicate((e) =>
+                e.message == 'BlocParentType must be a subclass of Bloc'))));
+  });
+
+  test('bloc too many @@@', () {
+    final builder = BlocPluginBuilder()
+        .addBaseBloc<ParentBloc>((context, config, repository) => ParentBloc());
+
+    final blocPlugin = builder.build();
+
+    final output = Voyager(config: {});
+    expect(
+        () => blocPlugin.outputFor(
+            null,
+            [
+              "ParentBloc@@mom",
+            ],
+            output),
+        throwsA(allOf(
+            isArgumentError,
+            predicate((e) =>
+                e.message == 'Too many @ sings in the key of the Bloc'))));
+  });
+
+  test('bloc missing builder', () {
+    final builder = BlocPluginBuilder();
+
+    final blocPlugin = builder.build();
+
+    final output = Voyager(config: {});
+    expect(
+        () => blocPlugin.outputFor(
+            null,
+            [
+              "ParentBloc",
+            ],
+            output),
+        throwsA(allOf(isUnimplementedError,
+            predicate((e) => e.message == 'No bloc builder for ParentBloc'))));
   });
 }
