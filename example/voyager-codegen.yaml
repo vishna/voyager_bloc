@@ -1,0 +1,18 @@
+## This file should be checked in version control
+## Describes sources and targets for the voyager-codegen tool
+- name: Voyager # base name for generated classes, e.g. VoyagerData, VoyagerTests etc.
+  source: lib/main.dart
+  target: lib/gen/voyager_gen.dart
+  schema:
+    widget:
+      input:
+        type: string
+    bloc:
+      output: BlocRepository
+      import: 'package:voyager_bloc/voyager_bloc.dart'
+      input:
+        type: array
+    title:
+      output: String
+      input:
+        type: string

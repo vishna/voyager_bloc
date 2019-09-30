@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:voyager/voyager.dart';
 import 'package:voyager_bloc/voyager_bloc.dart';
 
+import './gen/voyager_gen.dart';
+
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -51,7 +53,7 @@ final plugins = [
 void main() async {
   BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(Provider.value(
-    value: await loadRouter(paths, plugins),
+    value: await loadRouter(paths, plugins, voyagerFactory: voyagerDataFactory),
     child: App(),
   ));
 }
@@ -61,7 +63,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: VoyagerWidget(path: "/counter"),
+      home: VoyagerWidget(path: pathCounter),
     );
   }
 }
@@ -69,17 +71,16 @@ class App extends StatelessWidget {
 class CounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final voyager = Provider.of<Voyager>(context);
-    final BlocRepository blocRepo = voyager["bloc"];
-    final counterBloc = blocRepo.find<CounterBloc>();
-    final themeBloc = blocRepo.find<ThemeBloc>();
+    final voyager = VoyagerProvider.of(context);
+    final counterBloc = voyager.bloc.find<CounterBloc>();
+    final themeBloc = voyager.bloc.find<ThemeBloc>();
 
     return BlocBuilder<ThemeBloc, ThemeData>(
       bloc: themeBloc,
       builder: (context, data) => Theme(
         data: data,
         child: Scaffold(
-          appBar: AppBar(title: Text(voyager["title"])),
+          appBar: AppBar(title: Text(voyager.title)),
           body: BlocBuilder<CounterBloc, int>(
             bloc: counterBloc,
             builder: (context, count) {
