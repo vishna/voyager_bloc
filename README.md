@@ -1,6 +1,32 @@
 # voyager_bloc
 
-A new Flutter package project.
+Adds ability to specify used BLoCs on the widget level.
+
+## Usage
+
+Specify wanted blocs per screen in YAML file, like so:
+
+```yaml
+'/my/fancy/path':
+  widget: FancyWidget
+  bloc:
+    - BlocA : 12 # provide config for bloc after :
+    - BlocB :
+        - field1: "hello"
+        - field2: "world"
+    - BlocC@foo : "enemy" # use @ to provide named blocs
+    - BlocC@bar : "friend"
+```
+
+Use `BlocPluginBuilder` to provide mappings for your blocs:
+
+```dart
+BlocPluginBuilder()
+  .addBaseBloc<BlocA>((routeContext, config, repository) => /* return BlocA here */)
+  .build()
+```
+
+where repository gives you access to other blocs from your the scope of your page.
 
 ## Class Hierarchy & Bloc Plugin Builder
 
@@ -20,4 +46,42 @@ If your bloc doesn't extend directly from `Bloc` but e.g. from `ParentBloc` you 
 addBloc<ChildBloc, ParentBloc>((routeContext, config, repository) {
     return ChildBloc();
 })
+```
+
+## Schema Validator
+
+If you're using schema validation with `voyager:codegen` you can add the following to cover basics
+
+```yaml
+bloc:
+  output: BlocRepository
+  import: 'package:voyager_bloc/voyager_bloc.dart'
+  input:
+    type: array
+```
+
+## Accessing Blocs
+
+Once you are working in the buildContext of Widget you can obtain `BlocRepository`
+
+```dart
+final repo = Provider.of<Voyager>(context)["bloc"];
+```
+
+or if you use generated strong types:
+
+```dart
+final repo = VoyagerProvider.of(context).data;
+```
+
+From there you can find blocs by type, e.g.:
+
+```dart
+final blocA = repo.find<BlocA>();
+```
+
+...and if your bloc was given a specific name, then supply name parameter:
+
+```dart
+final fooBlocC = repo.find<BlocC>(name: "foo");
 ```

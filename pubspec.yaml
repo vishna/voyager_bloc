@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   voyager: ^1.0.4
-  bloc: ^0.14.4
-  flutter_bloc: ^0.20.0
+  bloc: ^0.15.0
+  flutter_bloc: ^0.21.0
 
 dev_dependencies:
   flutter_test:
