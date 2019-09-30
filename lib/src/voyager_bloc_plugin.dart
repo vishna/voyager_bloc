@@ -8,7 +8,7 @@ class BlocPluginBuilder {
   var _blocBuilders = <_RepositoryBlocBuilder>[];
   BlocPluginBuilder
       addBloc<BlocType extends BlocParentType, BlocParentType extends Bloc>(
-          BlocBuilder<BlocType> builder) {
+          VoyagerBlocBuilder<BlocType> builder) {
     final blocType = _typeOf<BlocType>();
     final blocParentType = _typeOf<BlocParentType>();
 
@@ -27,7 +27,7 @@ class BlocPluginBuilder {
   }
 
   BlocPluginBuilder addBaseBloc<BlocType extends Bloc>(
-          BlocBuilder<BlocType> builder) =>
+          VoyagerBlocBuilder<BlocType> builder) =>
       addBloc<BlocType, BlocType>(builder);
 
   BlocPlugin build() => BlocPlugin(_blocBuilders);
@@ -98,13 +98,13 @@ class BlocPlugin extends RouterPlugin {
   }
 }
 
-typedef BlocBuilder<T extends Bloc> = T Function(
+typedef VoyagerBlocBuilder<T extends Bloc> = T Function(
     RouterContext context, dynamic config, BlocRepository blocRepository);
 
 class _RepositoryBlocBuilder {
   final Type type;
   final Type parentType;
-  final BlocBuilder builder;
+  final VoyagerBlocBuilder builder;
 
   _RepositoryBlocBuilder(this.builder, this.type, this.parentType);
 }
