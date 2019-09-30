@@ -71,7 +71,7 @@ final repo = Provider.of<Voyager>(context)["bloc"];
 or if you use generated strong types:
 
 ```dart
-final repo = VoyagerProvider.of(context).data;
+final repo = VoyagerProvider.of(context).bloc;
 ```
 
 From there you can find blocs by type, e.g.:
