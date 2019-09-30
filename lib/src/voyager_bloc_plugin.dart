@@ -50,7 +50,7 @@ class BlocPlugin extends RouterPlugin {
     if (!(config is List<dynamic>)) return;
 
     final blocRepository = BlocRepository();
-    final blocsToDispose = List<Bloc>();
+    final blocsToDispose = List<_Lazy<Bloc>>();
 
     (config as List<dynamic>).forEach((blocNode) {
       dynamic blocConfig;
@@ -81,14 +81,19 @@ class BlocPlugin extends RouterPlugin {
         throw UnimplementedError("No bloc builder for $key");
       }
 
-      Bloc bloc = builder.builder(context, blocConfig, blocRepository);
+      _Lazy<Bloc> bloc = _Lazy<Bloc>(
+          () => builder.builder(context, blocConfig, blocRepository));
       blocRepository.add(bloc, name, builder.type, builder.parentType);
       blocsToDispose.add(bloc);
     });
 
     output[_KEY_BLOC] = blocRepository;
     output.onDispose(() {
-      blocsToDispose.forEach((bloc) => bloc.dispose());
+      blocsToDispose.forEach((bloc) {
+        if (bloc.isInitalized) {
+          bloc.value.dispose();
+        }
+      });
     });
   }
 }
@@ -106,11 +111,11 @@ class _RepositoryBlocBuilder {
 
 class BlocRepository {
   /// [parentType][name] map of blocs
-  final _blocByType = Map<String, List<Bloc>>();
-  final _blocByParentType = Map<String, List<Bloc>>();
-  final _blocByName = Map<String, List<Bloc>>();
+  final _blocByType = Map<String, List<_Lazy<Bloc>>>();
+  final _blocByParentType = Map<String, List<_Lazy<Bloc>>>();
+  final _blocByName = Map<String, List<_Lazy<Bloc>>>();
 
-  void add(Bloc bloc, String name, Type blocType, Type parentType) {
+  void add(_Lazy<Bloc> bloc, String name, Type blocType, Type parentType) {
     String typeStr = blocType.toString();
     String parentTypeStr = parentType.toString();
 
@@ -125,12 +130,20 @@ class BlocRepository {
 
   T find<T extends Bloc>({String name}) {
     if (name != null && name != _KEY_DEFAULT) {
-      return _firstOrNull(_blocByName[name]?.where((it) => it is T)?.toList());
+      T foundBloc;
+      _blocByName[name]?.forEach((lazyBloc) {
+        final bloc = lazyBloc.value;
+        if (bloc is T) {
+          foundBloc = bloc;
+          return;
+        }
+      });
+      return foundBloc;
     }
 
     String blocType = _typeOf<T>().toString();
-    return _firstOrNull(_blocByType[blocType]) ??
-        _firstOrNull(_blocByParentType[blocType]);
+    return _firstOrNull(_blocByType[blocType])?.value ??
+        _firstOrNull(_blocByParentType[blocType])?.value;
   }
 }
 
@@ -141,4 +154,21 @@ Type _typeOf<T>() => T;
 dynamic _firstOrNull(List list) {
   if (list == null || list.isEmpty) return null;
   return list[0];
+}
+
+typedef LazyBuilder<T> = T Function();
+
+class _Lazy<T> {
+  _Lazy(this.builder);
+  T _value;
+  final LazyBuilder<T> builder;
+
+  bool get isInitalized => _value != null;
+
+  T get value {
+    if (_value == null) {
+      _value = builder();
+    }
+    return _value;
+  }
 }
