@@ -1,5 +1,7 @@
 # voyager_bloc
 
+[![pub package](https://img.shields.io/pub/v/voyager_bloc.svg)](https://pub.dartlang.org/packages/voyager_bloc) [![Codemagic build astatus](https://api.codemagic.io/apps/5d9486dd9af71d0008d63359/5d9486dd9af71d0008d63358/status_badge.svg)](https://codemagic.io/apps/5d9486dd9af71d0008d63359/5d9486dd9af71d0008d63358/latest_build) [![codecov](https://codecov.io/gh/vishna/voyager_bloc/branch/master/graph/badge.svg)](https://codecov.io/gh/vishna/voyager_bloc)
+
 Adds ability to specify used BLoCs on the widget level.
 
 ## Usage

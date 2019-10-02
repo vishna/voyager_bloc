@@ -1,0 +1,21 @@
+schema:
+  widget:
+    input:
+      type: string
+  bloc:
+    output: BlocRepository
+    import: 'package:voyager_bloc/voyager_bloc.dart'
+    input:
+      type: array
+      items:
+        type: object
+        properties:
+          CounterBloc:
+            type: number
+          ThemeBloc:
+            type: string
+            enum: [light, dark]
+  title:
+    output: String
+    input:
+      type: string

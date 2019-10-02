@@ -1,3 +1,9 @@
+## [0.2.1]
+
+* Update to voyager 1.0.6
+* Coverage tracking (codecov + codemagic + badges)
+* Example cleanup
+
 ## [0.2.0]
 
 * Blocks within the repo are now lazy initalized
