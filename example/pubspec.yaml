@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  voyager: ^1.0.4
+  voyager: '>=1.0.0 <2.0.0'
   voyager_bloc:
     path: ../
   provider: ^3.1.0
