@@ -30,6 +30,11 @@ class BlocPluginBuilder {
           VoyagerBlocBuilder<BlocType> builder) =>
       addBloc<BlocType, BlocType>(builder);
 
+  BlocPluginBuilder addBuilder(BlocPluginBuilder other) {
+    _blocBuilders.addAll(other._blocBuilders);
+    return this;
+  }
+
   BlocPlugin build() => BlocPlugin(_blocBuilders);
 }
 

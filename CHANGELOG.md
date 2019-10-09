@@ -1,3 +1,7 @@
+# 0.2.3
+
+* Make `BlocPluginBuilder` additive
+
 # 0.2.2
 
 * Update voyager version range

@@ -147,4 +147,54 @@ void main() {
         throwsA(allOf(isUnimplementedError,
             predicate((e) => e.message == 'No bloc builder for ParentBloc'))));
   });
+
+  test('bloc additive builders', () {
+    final builderA = BlocPluginBuilder()
+        .addBaseBloc<ParentBloc>((context, config, repository) => ParentBloc())
+        .addBaseBloc<CounterBloc>((context, config, repository) =>
+            CounterBloc(int.parse(config.toString())));
+
+    final builderB = BlocPluginBuilder()
+        .addBloc<ChildBloc, ParentBloc>(
+            (context, config, repository) => ChildBloc())
+        .addBaseBloc<StrangerBloc>(
+            (context, config, repository) => StrangerBloc());
+
+    final builder =
+        BlocPluginBuilder().addBuilder(builderA).addBuilder(builderB);
+
+    final blocPlugin = builder.build();
+
+    final output = Voyager(config: {});
+    blocPlugin.outputFor(
+        null,
+        [
+          "ParentBloc@mom",
+          "ParentBloc@dad",
+          "ChildBloc",
+          "StrangerBloc",
+          {"CounterBloc": 5}
+        ],
+        output);
+    output.lock();
+    final blocRepository = output["bloc"];
+
+    expect(blocRepository, isInstanceOf<BlocRepository>());
+    final parentBloc = blocRepository.find<ParentBloc>();
+    expect(parentBloc, isInstanceOf<ParentBloc>());
+    expect(parentBloc, isInstanceOf<ChildBloc>());
+    expect(blocRepository.find<ChildBloc>(), isInstanceOf<ChildBloc>());
+    expect(blocRepository.find<StrangerBloc>(), isInstanceOf<StrangerBloc>());
+    expect(blocRepository.find<ParentBloc>(name: "mom"),
+        isInstanceOf<ParentBloc>());
+    expect(blocRepository.find<ParentBloc>(name: "dad"),
+        isInstanceOf<ParentBloc>());
+    expect(blocRepository.find<ChildBloc>(name: "dad"), isNull);
+
+    final counterBloc = blocRepository.find<CounterBloc>();
+    expect(counterBloc, isInstanceOf<CounterBloc>());
+    expect((counterBloc as CounterBloc).currentState, 5);
+
+    output.dispose();
+  });
 }
