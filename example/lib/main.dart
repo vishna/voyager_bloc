@@ -35,14 +35,14 @@ final paths = loadPathsFromString('''
   type: counter
   title: Counter
   widget: CounterPage
-  bloc:
+  blocs:
     - CounterBloc: 42
     - ThemeBloc: dark
 ''');
 
 final plugins = [
   WidgetPluginBuilder().add<CounterPage>((context) => CounterPage()).build(),
-  BlocPluginBuilder()
+  BlocsPluginBuilder()
       .addBaseBloc<CounterBloc>(
           (context, config, repo) => CounterBloc.fromConfig(config))
       .addBaseBloc<ThemeBloc>(
@@ -72,8 +72,10 @@ class CounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final voyager = VoyagerProvider.of(context);
-    final counterBloc = voyager.bloc.find<CounterBloc>();
-    final themeBloc = voyager.bloc.find<ThemeBloc>();
+    // ignore: close_sinks
+    final counterBloc = voyager.blocs.find<CounterBloc>();
+    // ignore: close_sinks
+    final themeBloc = voyager.blocs.find<ThemeBloc>();
 
     return BlocBuilder<ThemeBloc, ThemeData>(
       bloc: themeBloc,
@@ -101,7 +103,7 @@ class CounterPage extends StatelessWidget {
                 child: FloatingActionButton(
                   child: Icon(Icons.add),
                   onPressed: () {
-                    counterBloc.dispatch(CounterEvent.increment);
+                    counterBloc.add(CounterEvent.increment);
                   },
                 ),
               ),
@@ -110,7 +112,7 @@ class CounterPage extends StatelessWidget {
                 child: FloatingActionButton(
                   child: Icon(Icons.remove),
                   onPressed: () {
-                    counterBloc.dispatch(CounterEvent.decrement);
+                    counterBloc.add(CounterEvent.decrement);
                   },
                 ),
               ),
@@ -119,7 +121,7 @@ class CounterPage extends StatelessWidget {
                 child: FloatingActionButton(
                   child: Icon(Icons.update),
                   onPressed: () {
-                    themeBloc.dispatch(ThemeEvent.toggle);
+                    themeBloc.add(ThemeEvent.toggle);
                   },
                 ),
               ),
@@ -149,10 +151,10 @@ class CounterBloc extends Bloc<CounterEvent, int> {
   Stream<int> mapEventToState(CounterEvent event) async* {
     switch (event) {
       case CounterEvent.decrement:
-        yield currentState - 1;
+        yield state - 1;
         break;
       case CounterEvent.increment:
-        yield currentState + 1;
+        yield state + 1;
         break;
     }
   }
@@ -185,9 +187,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeData> {
   Stream<ThemeData> mapEventToState(ThemeEvent event) async* {
     switch (event) {
       case ThemeEvent.toggle:
-        yield currentState == ThemeData.dark()
-            ? ThemeData.light()
-            : ThemeData.dark();
+        yield state == ThemeData.dark() ? ThemeData.light() : ThemeData.dark();
         break;
     }
   }

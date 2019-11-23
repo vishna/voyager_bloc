@@ -11,7 +11,7 @@ Specify wanted blocs per screen in YAML file, like so:
 ```yaml
 '/my/fancy/path':
   widget: FancyWidget
-  bloc:
+  blocs:
     - BlocA : 12 # provide config for bloc after :
     - BlocB :
         - field1: "hello"
@@ -55,7 +55,7 @@ addBloc<ChildBloc, ParentBloc>((routeContext, config, repository) {
 If you're using schema validation with `voyager:codegen` you can add the following to cover basics
 
 ```yaml
-bloc:
+blocs:
   output: BlocRepository
   import: 'package:voyager_bloc/voyager_bloc.dart'
   input:
@@ -67,13 +67,13 @@ bloc:
 Once you are working in the buildContext of Widget you can obtain `BlocRepository`
 
 ```dart
-final repo = Provider.of<Voyager>(context)["bloc"];
+final repo = Provider.of<Voyager>(context)["blocs"];
 ```
 
 or if you use generated strong types:
 
 ```dart
-final repo = VoyagerProvider.of(context).bloc;
+final repo = VoyagerProvider.of(context).blocs;
 ```
 
 From there you can find blocs by type, e.g.:

@@ -50,7 +50,7 @@ class CounterBloc extends Bloc {
 
 void main() {
   test('bloc builder basic API', () {
-    final builder = BlocPluginBuilder()
+    final builder = BlocsPluginBuilder()
         .addBaseBloc<ParentBloc>((context, config, repository) => ParentBloc())
         .addBaseBloc<CounterBloc>((context, config, repository) =>
             CounterBloc(int.parse(config.toString())))
@@ -73,7 +73,7 @@ void main() {
         ],
         output);
     output.lock();
-    final blocRepository = output["bloc"];
+    final blocRepository = output["blocs"];
 
     expect(blocRepository, isInstanceOf<BlocRepository>());
     final parentBloc = blocRepository.find<ParentBloc>();
@@ -89,14 +89,14 @@ void main() {
 
     final counterBloc = blocRepository.find<CounterBloc>();
     expect(counterBloc, isInstanceOf<CounterBloc>());
-    expect((counterBloc as CounterBloc).currentState, 5);
+    expect((counterBloc as CounterBloc).state, 5);
 
     output.dispose();
   });
 
   test('bloc builder basic API - errors', () {
     expect(
-        () => BlocPluginBuilder().addBaseBloc(null),
+        () => BlocsPluginBuilder().addBaseBloc(null),
         throwsA(allOf(
             isArgumentError,
             predicate((e) =>
@@ -104,7 +104,7 @@ void main() {
                 'BlocType must be a subclass of BlocParentType'))));
 
     expect(
-        () => BlocPluginBuilder().addBloc<ChildBloc, Bloc>(null),
+        () => BlocsPluginBuilder().addBloc<ChildBloc, Bloc>(null),
         throwsA(allOf(
             isArgumentError,
             predicate((e) =>
@@ -112,7 +112,7 @@ void main() {
   });
 
   test('bloc too many @@@', () {
-    final builder = BlocPluginBuilder()
+    final builder = BlocsPluginBuilder()
         .addBaseBloc<ParentBloc>((context, config, repository) => ParentBloc());
 
     final blocPlugin = builder.build();
@@ -132,7 +132,7 @@ void main() {
   });
 
   test('bloc missing builder', () {
-    final builder = BlocPluginBuilder();
+    final builder = BlocsPluginBuilder();
 
     final blocPlugin = builder.build();
 
@@ -149,19 +149,19 @@ void main() {
   });
 
   test('bloc additive builders', () {
-    final builderA = BlocPluginBuilder()
+    final builderA = BlocsPluginBuilder()
         .addBaseBloc<ParentBloc>((context, config, repository) => ParentBloc())
         .addBaseBloc<CounterBloc>((context, config, repository) =>
             CounterBloc(int.parse(config.toString())));
 
-    final builderB = BlocPluginBuilder()
+    final builderB = BlocsPluginBuilder()
         .addBloc<ChildBloc, ParentBloc>(
             (context, config, repository) => ChildBloc())
         .addBaseBloc<StrangerBloc>(
             (context, config, repository) => StrangerBloc());
 
     final builder =
-        BlocPluginBuilder().addBuilder(builderA).addBuilder(builderB);
+        BlocsPluginBuilder().addBuilder(builderA).addBuilder(builderB);
 
     final blocPlugin = builder.build();
 
@@ -177,7 +177,7 @@ void main() {
         ],
         output);
     output.lock();
-    final blocRepository = output["bloc"];
+    final blocRepository = output["blocs"];
 
     expect(blocRepository, isInstanceOf<BlocRepository>());
     final parentBloc = blocRepository.find<ParentBloc>();
@@ -193,7 +193,7 @@ void main() {
 
     final counterBloc = blocRepository.find<CounterBloc>();
     expect(counterBloc, isInstanceOf<CounterBloc>());
-    expect((counterBloc as CounterBloc).currentState, 5);
+    expect((counterBloc as CounterBloc).state, 5);
 
     output.dispose();
   });

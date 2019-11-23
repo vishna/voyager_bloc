@@ -1,3 +1,8 @@
+# 0.3.0
+
+- update to `bloc` 2.0.0 API
+- changed plugin node to `blocs` to better indicate it's a repository of blocs rather than individual bloc
+
 # 0.2.3
 
 * Make `BlocPluginBuilder` additive

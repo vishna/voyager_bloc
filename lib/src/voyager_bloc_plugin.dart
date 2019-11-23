@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:voyager/voyager.dart';
 
-const _KEY_BLOC = "bloc";
+const _KEY_BLOCS = "blocs";
 const _KEY_DEFAULT = "default";
 
-class BlocPluginBuilder {
+class BlocsPluginBuilder {
   var _blocBuilders = <_RepositoryBlocBuilder>[];
-  BlocPluginBuilder
+  BlocsPluginBuilder
       addBloc<BlocType extends BlocParentType, BlocParentType extends Bloc>(
           VoyagerBlocBuilder<BlocType> builder) {
     final blocType = _typeOf<BlocType>();
@@ -26,25 +26,25 @@ class BlocPluginBuilder {
     return this;
   }
 
-  BlocPluginBuilder addBaseBloc<BlocType extends Bloc>(
+  BlocsPluginBuilder addBaseBloc<BlocType extends Bloc>(
           VoyagerBlocBuilder<BlocType> builder) =>
       addBloc<BlocType, BlocType>(builder);
 
-  BlocPluginBuilder addBuilder(BlocPluginBuilder other) {
+  BlocsPluginBuilder addBuilder(BlocsPluginBuilder other) {
     _blocBuilders.addAll(other._blocBuilders);
     return this;
   }
 
-  BlocPlugin build() => BlocPlugin(_blocBuilders);
+  BlocsPlugin build() => BlocsPlugin(_blocBuilders);
 }
 
 /// Specify config
 ///
-class BlocPlugin extends RouterPlugin {
+class BlocsPlugin extends RouterPlugin {
   final Map<String, _RepositoryBlocBuilder> _builders =
       Map<String, _RepositoryBlocBuilder>();
 
-  BlocPlugin(List<_RepositoryBlocBuilder> builders) : super(_KEY_BLOC) {
+  BlocsPlugin(List<_RepositoryBlocBuilder> builders) : super(_KEY_BLOCS) {
     builders.forEach((builder) {
       _builders[builder.type.toString()] = builder;
     });
@@ -92,11 +92,11 @@ class BlocPlugin extends RouterPlugin {
       blocsToDispose.add(bloc);
     });
 
-    output[_KEY_BLOC] = blocRepository;
+    output[_KEY_BLOCS] = blocRepository;
     output.onDispose(() {
       blocsToDispose.forEach((bloc) {
         if (bloc.isInitalized) {
-          bloc.value.dispose();
+          bloc.value.close();
         }
       });
     });
@@ -137,6 +137,7 @@ class BlocRepository {
     if (name != null && name != _KEY_DEFAULT) {
       T foundBloc;
       _blocByName[name]?.forEach((lazyBloc) {
+        // ignore: close_sinks
         final bloc = lazyBloc.value;
         if (bloc is T) {
           foundBloc = bloc;

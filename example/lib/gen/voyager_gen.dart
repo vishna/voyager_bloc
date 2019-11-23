@@ -11,7 +11,7 @@ class VoyagerData extends Voyager {
   VoyagerData({String path, Voyager parent, Map<String, dynamic> config})
       : super(path: path, parent: parent, config: config);
 
-  BlocRepository get bloc => this["bloc"];
+  BlocRepository get blocs => this["blocs"];
   String get title => this["title"];
 }
 

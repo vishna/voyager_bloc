@@ -2,7 +2,7 @@ schema:
   widget:
     input:
       type: string
-  bloc:
+  blocs:
     output: BlocRepository
     import: 'package:voyager_bloc/voyager_bloc.dart'
     input:
