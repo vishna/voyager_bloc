@@ -19,10 +19,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  voyager: '>=1.0.0 <2.0.0'
+  voyager: '>=1.2.0 <2.0.0'
   voyager_bloc:
     path: ../
-  provider: ^3.1.0
+  provider: ^4.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

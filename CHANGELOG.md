@@ -1,3 +1,7 @@
+# 0.4.0
+
+- update to `bloc` 3.0.0 API
+
 # 0.3.0
 
 - update to `bloc` 2.0.0 API
