@@ -1,3 +1,7 @@
+# 0.5.0
+
+- update to `voyager` 2.0.0 API
+
 # 0.4.0
 
 - update to `bloc` 3.0.0 API

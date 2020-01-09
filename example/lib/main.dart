@@ -53,7 +53,7 @@ final plugins = [
 void main() async {
   BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(Provider.value(
-    value: await loadRouter(paths, plugins, voyagerFactory: voyagerDataFactory),
+    value: await loadRouter(paths, plugins),
     child: App(),
   ));
 }
@@ -71,7 +71,7 @@ class App extends StatelessWidget {
 class CounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final voyager = VoyagerProvider.of(context);
+    final voyager = context.voyager;
     // ignore: close_sinks
     final counterBloc = voyager.blocs.find<CounterBloc>();
     // ignore: close_sinks
